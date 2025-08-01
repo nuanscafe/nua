@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
   plugins: [react()],
-  base: '/nuansqr/',
+  base: '/nua/',
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
