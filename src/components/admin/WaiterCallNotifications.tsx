@@ -11,8 +11,8 @@ const WaiterCallNotifications: React.FC = () => {
   useEffect(() => {
     const waiterCallsCollection = collection(db, 'waiterCalls');
     const waiterCallsQuery = query(
-      waiterCallsCollection, 
-      where('status', '!=', 'resolved'),
+      waiterCallsCollection,
+      where('status', 'in', ['pending', 'acknowledged']),
       orderBy('status'),
       orderBy('timestamp', 'desc')
     );
