@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 
 // Müşteri Sayfaları
@@ -20,18 +20,18 @@ const HomePage = () => {
       <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
         <h1 className="text-3xl font-bold text-amber-800 mb-6">Kafe QR Sipariş Sistemi</h1>
         <div className="space-y-4">
-          <a 
-            href="/admin"
+          <Link
+            to="/admin"
             className="block w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-4 rounded-md transition-colors"
           >
             Yönetim Paneli
-          </a>
-          <a 
-            href="/admin/qrcodes"
+          </Link>
+          <Link
+            to="/admin/qrcodes"
             className="block w-full bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-md transition-colors"
           >
             QR Kodları Görüntüle
-          </a>
+          </Link>
         </div>
       </div>
     </div>
