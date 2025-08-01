@@ -41,10 +41,10 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, onStatusUpdate, onOrderSe
 
   // Siparişleri duruma göre grupla
   const groupedOrders = {
-    new: orders.filter(order => order.status === 'new'),
-    preparing: orders.filter(order => order.status === 'preparing'),
-    ready: orders.filter(order => order.status === 'ready'),
-    delivered: orders.filter(order => order.status === 'delivered')
+    new: orders.filter(order => order && order.status === 'new'),
+    preparing: orders.filter(order => order && order.status === 'preparing'),
+    ready: orders.filter(order => order && order.status === 'ready'),
+    delivered: orders.filter(order => order && order.status === 'delivered')
   };
 
   const getSectionTitle = (status: OrderStatus) => {
