@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 
 // Müşteri Sayfaları
@@ -40,7 +40,7 @@ const HomePage = () => {
 
 function App() {
   return (
-    <Router basename="/nuansqr">
+    <Router>
       <CartProvider>
         <div className="min-h-screen bg-amber-50">
           <Routes>
