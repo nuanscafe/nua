@@ -30,6 +30,15 @@ interface OrderGridProps {
 }
 
 const OrderGrid: React.FC<OrderGridProps> = ({ orders, onStatusUpdate, onOrderSelect }) => {
+  // Defensively check if orders is an array before processing
+  if (!Array.isArray(orders)) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-xl font-semibold text-gray-600">Siparişler yükleniyor...</h3>
+      </div>
+    );
+  }
+
   // Siparişleri duruma göre grupla
   const groupedOrders = {
     new: orders.filter(order => order.status === 'new'),
