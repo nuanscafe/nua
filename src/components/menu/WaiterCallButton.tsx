@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createWaiterCall } from '../../data/menuData';
 
 interface WaiterCallButtonProps {
@@ -6,6 +7,7 @@ interface WaiterCallButtonProps {
 }
 
 const WaiterCallButton: React.FC<WaiterCallButtonProps> = ({ tableId }) => {
+  const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [lastCallTime, setLastCallTime] = useState<number | null>(null);
 
@@ -13,18 +15,19 @@ const WaiterCallButton: React.FC<WaiterCallButtonProps> = ({ tableId }) => {
     // Prevent spam calls (minimum 30 seconds between calls)
     const now = Date.now();
     if (lastCallTime && now - lastCallTime < 30000) {
-      alert('Lütfen 30 saniye bekleyip tekrar deneyin.');
+      const remaining = Math.ceil((30000 - (now - lastCallTime)) / 1000);
+      alert(t('waiter_call.try_again_in_seconds', { count: remaining }));
       return;
     }
 
     setIsLoading(true);
     try {
-      await createWaiterCall(tableId, 'Müşteri garson çağırdı');
+      await createWaiterCall(tableId, t('waiter_call.message_default'));
       setLastCallTime(now);
-      alert('Garson çağrısı gönderildi! Garson en kısa sürede gelecektir.');
+      alert(t('waiter_call.sent_success'));
     } catch (error) {
       console.error('Garson çağrısı gönderilirken hata oluştu:', error);
-      alert('Garson çağrısı gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      alert(t('waiter_call.sent_error'));
     } finally {
       setIsLoading(false);
     }
@@ -40,7 +43,7 @@ const WaiterCallButton: React.FC<WaiterCallButtonProps> = ({ tableId }) => {
           : 'bg-blue-500 hover:bg-blue-600 text-white'
       }`}
     >
-      {isLoading ? 'Gönderiliyor...' : '🔔 Garson Çağır'}
+      {isLoading ? t('waiter_call.sending') : `🔔 ${t('waiter_call.button')}`}
     </button>
   );
 };

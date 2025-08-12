@@ -1,4 +1,12 @@
 {
+  "waiter_call": {
+    "button": "Garson Çağır",
+    "sending": "Gönderiliyor...",
+    "try_again_in_seconds": "Lütfen {{count}} saniye sonra tekrar deneyin.",
+    "message_default": "Müşteri garson çağırdı",
+    "sent_success": "Garson çağrısı gönderildi! Garson en kısa sürede gelecektir.",
+    "sent_error": "Garson çağrısı gönderilirken bir hata oluştu. Lütfen tekrar deneyin."
+  },
   "menuManagement": "Menü Yönetimi",
   "addNewMenuItem": "Yeni Menü Öğesi Ekle",
   "addNewMenuItemDescription": "Menüye yeni bir öğe ekleyin.",

@@ -1,4 +1,12 @@
 {
+  "waiter_call": {
+    "button": "Call Waiter",
+    "sending": "Sending...",
+    "try_again_in_seconds": "Please try again in {{count}} seconds.",
+    "message_default": "Customer called a waiter",
+    "sent_success": "Waiter call sent! Someone will come shortly.",
+    "sent_error": "An error occurred while sending the waiter call. Please try again."
+  },
   "menuManagement": "Menu Management",
   "addNewMenuItem": "Add New Menu Item",
   "addNewMenuItemDescription": "Add a new item to the menu.",

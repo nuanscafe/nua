@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { db } from '../../firebase'; // Import the initialized Firestore instance
-import { collection, addDoc, Timestamp } from 'firebase/firestore'; // Import Firestore functions
+import { collection, addDoc, Timestamp, query, where, getDocs, doc, updateDoc } from 'firebase/firestore'; // Import Firestore functions
 
 const CheckoutPage: React.FC = () => {
   const { tableId } = useParams<{ tableId: string }>();
@@ -17,22 +17,96 @@ const CheckoutPage: React.FC = () => {
 
       // Generate unique session ID
       const sessionId = crypto.randomUUID();
-      
-      // Prepare the order data
+
+      // Normalize current cart items
+      const currentItems = (Array.isArray(items) ? items : []).map(it => ({
+        id: String(it?.id ?? ''),
+        // name alanı bazı yerlerde name_tr olabilir; güvenli fallback verelim
+        name: String((it as any)?.name ?? (it as any)?.name_tr ?? 'Tanımsız'),
+        price: Number.isFinite(it?.price) ? Number(it.price) : 0,
+        quantity: Number.isFinite(it?.quantity) ? Number(it.quantity) : 0,
+      }));
+
+      const tableIdSafe = typeof tableId === 'string' ? tableId : '';
+
+      // Önce aynı masaya ait paymentStatus 'pending' olan açık bir hesap var mı kontrol et
+      const ordersCol = collection(db, 'orders');
+      const openQuery = query(
+        ordersCol,
+        where('tableId', '==', tableIdSafe),
+        where('paymentStatus', '==', 'pending')
+      );
+      const openSnap = await getDocs(openQuery);
+
+      if (!openSnap.empty) {
+        // İlk açık hesabı seç ve birleştir
+        const targetDoc = openSnap.docs[0];
+        const targetData: any = targetDoc.data();
+
+        // Hedefin mevcut öğelerini normalize et
+        const targetItems = (Array.isArray(targetData?.items) ? targetData.items : [])
+          .filter((it: any) => it && typeof it === 'object')
+          .map((it: any) => ({
+            id: String(it?.id ?? ''),
+            name: String(it?.name ?? 'Tanımsız'),
+            price: Number.isFinite(it?.price) ? Number(it.price) : 0,
+            quantity: Number.isFinite(it?.quantity) ? Number(it.quantity) : 0,
+          }));
+
+        // Item bazında quantity topla
+        const mergedMap = new Map<string, { id: string; name: string; price: number; quantity: number }>();
+        for (const it of targetItems) {
+          const key = String(it.id);
+          mergedMap.set(key, { ...it });
+        }
+        for (const it of currentItems) {
+          const key = String(it.id);
+          const existing = mergedMap.get(key);
+          if (existing) {
+            mergedMap.set(key, { ...existing, quantity: (existing.quantity || 0) + (it.quantity || 0) });
+          } else {
+            mergedMap.set(key, { ...it });
+          }
+        }
+        const mergedItems = Array.from(mergedMap.values());
+
+        // Toplam fiyatı yeniden hesapla
+        const newTotal = mergedItems.reduce((sum, it) => sum + (Number(it.price) * Number(it.quantity)), 0);
+
+        // Notu birleştir (mevcut not + ' | ' + yeni not) - boşlar yok sayılır
+        const existingNote = typeof targetData?.orderNote === 'string' ? targetData.orderNote.trim() : '';
+        const incomingNote = (orderNote ?? '').trim();
+        const combinedNote =
+          existingNote && incomingNote ? `${existingNote} | ${incomingNote}` :
+          existingNote ? existingNote :
+          incomingNote ? incomingNote : '';
+
+        // Dokümanı güncelle
+        await updateDoc(doc(db, 'orders', targetDoc.id), {
+          items: mergedItems,
+          totalPrice: newTotal,
+          orderNote: combinedNote || null,
+          // son aktiviteyi gösterecek şekilde timestamp güncelle
+          timestamp: Timestamp.now(),
+          // status korunur; paymentStatus zaten 'pending'
+        });
+
+        alert('Siparişiniz mevcut açık hesaba eklendi. Teşekkür ederiz.');
+        clearCart();
+        navigate(`/thank-you/${tableId}`);
+        return;
+      }
+
+      // Açık hesap yoksa yeni order oluştur
       const orderData = {
-        tableId: tableId,
-        sessionId: sessionId,
-        items: items.map(item => ({ // Map cart items to a suitable format for Firestore
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        })),
-        totalPrice: getTotalPrice(),
-        orderNote: orderNote,
+        tableId: tableIdSafe,
+        sessionId: typeof sessionId === 'string' ? sessionId : '',
+        items: currentItems,
+        totalPrice: Number.isFinite(getTotalPrice()) ? Number(getTotalPrice()) : 0,
+        orderNote: orderNote ?? '',
         timestamp: Timestamp.now(), // Add a timestamp
-        status: 'new', // Initial status (changed from 'Pending' to match our OrderStatus type)
-        paymentStatus: 'pending', // Add payment status
+        status: 'new' as const, // Initial status
+        paymentStatus: 'pending' as const, // Add payment status
       };
 
       // Save the order to Firestore
@@ -41,9 +115,10 @@ const CheckoutPage: React.FC = () => {
       alert('Siparişiniz alındı! Teşekkür ederiz.');
       clearCart();
       navigate(`/thank-you/${tableId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting order:', error);
-      alert('Sipariş gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      const msg = typeof error?.message === 'string' ? error.message : String(error);
+      alert(`Sipariş gönderilirken bir hata oluştu. Lütfen tekrar deneyin.\nDetay: ${msg}`);
     }
   };
 

@@ -550,7 +550,7 @@ const AdminMenuManagementPage: React.FC = () => {
                               <Edit className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
+                          <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle>{t('editMenuItem')}</DialogTitle>
                               <DialogDescription>
@@ -789,7 +789,7 @@ const AdminMenuManagementPage: React.FC = () => {
                               <Edit className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
+                          <DialogContent className="sm:max-w-[500px] max-h-[70vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle>{t('editCategory')}</DialogTitle>
                               <DialogDescription>

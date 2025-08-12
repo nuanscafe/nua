@@ -1,4 +1,12 @@
 {
+  "waiter_call": {
+    "button": "Appeler le serveur",
+    "sending": "Envoi...",
+    "try_again_in_seconds": "Veuillez réessayer dans {{count}} secondes.",
+    "message_default": "Le client a appelé un serveur",
+    "sent_success": "Appel du serveur envoyé ! Quelqu’un va arriver sous peu.",
+    "sent_error": "Une erreur s’est produite lors de l’envoi de l’appel. Veuillez réessayer."
+  },
   "menuManagement": "Gestion du menu",
   "addNewMenuItem": "Ajouter un nouvel élément de menu",
   "addNewMenuItemDescription": "Ajouter un nouvel élément au menu.",

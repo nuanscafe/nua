@@ -73,6 +73,22 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
         
+        {/* Geçmiş Siparişler Kartı */}
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-800">Geçmiş Siparişler</h2>
+            </div>
+            <p className="text-gray-600 mb-6">Ödenen siparişleri görüntüle ve raporla</p>
+            <Link 
+              to="/admin/order-history"
+              className="block w-full bg-green-500 hover:bg-green-600 text-white text-center py-2 px-4 rounded-md transition-colors"
+            >
+              Geçmiş Siparişler
+            </Link>
+          </div>
+        </div>
+        
         {/* QR Kodlar Kartı */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           <div className="p-6">

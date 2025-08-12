@@ -41,22 +41,22 @@ const Cart: React.FC = () => {
             
             <div className="flex items-center">
               <div className="flex items-center border border-gray-300 rounded-md">
-                <button 
-                  onClick={() => updateQuantity(parseInt(item.id), item.quantity - 1)}
+                <button
+                  onClick={() => updateQuantity(String(item.id), item.quantity - 1)}
                   className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                 >
                   -
                 </button>
                 <span className="px-3 py-1">{item.quantity}</span>
-                <button 
-                  onClick={() => updateQuantity(parseInt(item.id), item.quantity + 1)}
+                <button
+                  onClick={() => updateQuantity(String(item.id), item.quantity + 1)}
                   className="px-3 py-1 text-gray-600 hover:bg-gray-100"
                 >
                   +
                 </button>
               </div>
-              <button 
-                onClick={() => removeFromCart(parseInt(item.id))}
+              <button
+                onClick={() => removeFromCart(String(item.id))}
                 className="ml-2 text-red-500 hover:text-red-700"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

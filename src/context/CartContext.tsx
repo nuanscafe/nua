@@ -9,8 +9,8 @@ interface CartContextType {
   items: CartItem[];
   tableId: string | null;
   addToCart: (item: MenuItem) => void;
-  removeFromCart: (itemId: number) => void;
-  updateQuantity: (itemId: number, quantity: number) => void;
+  removeFromCart: (itemId: string) => void;
+  updateQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
   setTableId: (id: string) => void;
   getTotalPrice: () => number;
@@ -23,32 +23,36 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [items, setItems] = useState<CartItem[]>([]);
   const [tableId, setTableId] = useState<string | null>(null);
 
+  // item.id'yi stringe normalize ederek duplikeleri tutarlı biçimde birleştir
   const addToCart = (item: MenuItem) => {
+    const normalizedId = String((item as any)?.id ?? '');
+    const normalizedItem: MenuItem = { ...item, id: normalizedId } as MenuItem;
+
     setItems(prevItems => {
-      const existingItem = prevItems.find(i => i.id === item.id);
+      // Mevcut listede id'ler string olarak kıyaslanır
+      const existingItem = prevItems.find(i => String(i.id) === normalizedId);
       if (existingItem) {
-        return prevItems.map(i => 
-          i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+        return prevItems.map(i =>
+          String(i.id) === normalizedId ? { ...i, quantity: i.quantity + 1 } : i
         );
-      } else {
-        return [...prevItems, { ...item, quantity: 1 }];
       }
+      // Yeni eklenen ürünün adı bazı veri setlerinde name yerine name_tr olabilir; Cart/FloatingCart tutarlılığı için saklarken orijinal alanları koruyoruz
+      return [...prevItems, { ...(normalizedItem as any), quantity: 1 }];
     });
   };
 
-  const removeFromCart = (itemId: number) => {
-    setItems(prevItems => prevItems.filter(item => parseInt(item.id) !== itemId));
+  const removeFromCart = (itemId: string) => {
+    setItems(prevItems => prevItems.filter(item => String(item.id) !== String(itemId)));
   };
 
-  const updateQuantity = (itemId: number, quantity: number) => {
+  const updateQuantity = (itemId: string, quantity: number) => {
     if (quantity <= 0) {
       removeFromCart(itemId);
       return;
     }
-    
-    setItems(prevItems => 
-      prevItems.map(item => 
-        parseInt(item.id) === itemId ? { ...item, quantity } : item
+    setItems(prevItems =>
+      prevItems.map(item =>
+        String(item.id) === String(itemId) ? { ...item, quantity } : item
       )
     );
   };

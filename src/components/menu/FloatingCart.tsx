@@ -57,20 +57,20 @@ const FloatingCart: React.FC<FloatingCartProps> = ({ tableId }) => {
                 </div>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => updateQuantity(parseInt(item.id), item.quantity - 1)}
+                    onClick={() => updateQuantity(String(item.id), item.quantity - 1)}
                     className="bg-gray-200 hover:bg-gray-300 text-gray-700 w-6 h-6 rounded-full text-xs"
                   >
                     -
                   </button>
                   <span className="text-sm font-medium w-6 text-center">{item.quantity}</span>
                   <button
-                    onClick={() => updateQuantity(parseInt(item.id), item.quantity + 1)}
+                    onClick={() => updateQuantity(String(item.id), item.quantity + 1)}
                     className="bg-amber-500 hover:bg-amber-600 text-white w-6 h-6 rounded-full text-xs"
                   >
                     +
                   </button>
                   <button
-                    onClick={() => removeFromCart(parseInt(item.id))}
+                    onClick={() => removeFromCart(String(item.id))}
                     className="bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full text-xs ml-1"
                   >
                     🗑

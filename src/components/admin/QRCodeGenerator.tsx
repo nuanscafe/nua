@@ -4,8 +4,13 @@ import { QRCodeSVG } from 'qrcode.react';
 import { tables } from '../../data/menuData';
 
 const QRCodeGenerator: React.FC = () => {
-  const navigate = useNavigate();
-  const baseUrl = window.location.origin;
+const navigate = useNavigate();
+// QR URL'lerini dağıtım/hedef ortama göre dinamik üret
+// Vite BASE_URL: prod'da /nua/, dev/preview'da /
+const appBase = (import.meta as any).env?.BASE_URL ?? '/';
+const normalizedBase = appBase.endsWith('/') ? appBase : `${appBase}/`;
+// HashRouter ile çalışacak tam QR tabanı: https://domain/base/#/menu/...
+const qrBase = `${window.location.origin}${normalizedBase}#`;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -20,7 +25,7 @@ const QRCodeGenerator: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-800 mb-4">{table.name}</h2>
             <div className="bg-white p-4 rounded-lg shadow-sm mb-4">
               <QRCodeSVG 
-                value={`${baseUrl}/menu/${table.qrCode}`} 
+                value={`${qrBase}/menu/${table.qrCode}`}
                 size={180} 
                 bgColor={"#ffffff"} 
                 fgColor={"#000000"} 
@@ -29,7 +34,7 @@ const QRCodeGenerator: React.FC = () => {
               />
             </div>
             <p className="text-sm text-gray-600 mb-4">
-              URL: {`${baseUrl}/menu/${table.qrCode}`}
+              URL: {`${qrBase}/menu/${table.qrCode}`}
             </p>
             <button
               onClick={() => navigate(`/menu/${table.qrCode}`)}

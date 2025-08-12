@@ -10,6 +10,7 @@ import ThankYouPage from './pages/menu/ThankYouPage';
 // Yönetici Sayfaları
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminOrdersPage from './pages/admin/AdminOrdersPage';
+import AdminOrderHistoryPage from './pages/admin/AdminOrderHistoryPage';
 import QRCodeGenerator from './components/admin/QRCodeGenerator';
 import AdminMenuManagementPage from './pages/admin/AdminMenuManagementPage'; // Import the new component
 
@@ -55,6 +56,7 @@ function App() {
             {/* Yönetici Sayfaları */}
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
+            <Route path="/admin/order-history" element={<AdminOrderHistoryPage />} />
             <Route path="/admin/qrcodes" element={<QRCodeGenerator />} />
             <Route path="/admin/menu" element={<AdminMenuManagementPage />} /> {/* Add route for menu management */}
             

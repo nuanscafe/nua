@@ -77,13 +77,24 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onStatusUpdate, onOrderSel
       <div className="flex justify-between items-start mb-3">
         <div>
           <h3 className="text-lg font-bold text-gray-800">
-            {order.tableId.replace('table-', 'Masa ')}
+            {/* tableId güvenli kullanım */}
+            {typeof order.tableId === 'string' && order.tableId.length > 0
+              ? order.tableId.replace('table-', 'Masa ')
+              : 'Masa -'}
           </h3>
           <p className="text-sm text-gray-600">
             {formatTime(order.timestamp)}
           </p>
           <p className="text-xs text-gray-500">
-            Session: {order.sessionId.slice(-8)}
+            {/* sessionId güvenli kullanım: undefined/null ya da string olmayan durumları ele al */}
+            {(() => {
+              const sid = (order as any)?.sessionId;
+              const text =
+                typeof sid === 'string' && sid.length > 0
+                  ? `Session: ${sid.slice(-8)}`
+                  : 'Session: -';
+              return text;
+            })()}
           </p>
         </div>
         <div className={`px-3 py-1 rounded-full text-xs font-semibold ${statusInfo.color}`}>
@@ -101,12 +112,12 @@ const OrderCard: React.FC<OrderCardProps> = ({ order, onStatusUpdate, onOrderSel
         
         {/* İlk 2 ürünü göster */}
         <div className="mt-2 space-y-1">
-          {order.items.slice(0, 2).map((item, index) => (
+          {(Array.isArray(order.items) ? order.items : []).slice(0, 2).map((item, index) => (
             <div key={index} className="text-xs text-gray-600">
-              {item.quantity}x {item.name}
+              {item?.quantity}x {item?.name ?? '-'}
             </div>
           ))}
-          {order.items.length > 2 && (
+          {Array.isArray(order.items) && order.items.length > 2 && (
             <div className="text-xs text-gray-500 italic">
               +{order.items.length - 2} ürün daha...
             </div>

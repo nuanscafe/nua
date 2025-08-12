@@ -39,12 +39,13 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, onStatusUpdate, onOrderSe
     );
   }
 
-  // Siparişleri duruma göre grupla
+  // Siparişleri duruma göre grupla (tamamen güvenli)
+  const safeOrders = Array.isArray(orders) ? orders.filter(Boolean) : [];
   const groupedOrders = {
-    new: orders.filter(order => order && order.status === 'new'),
-    preparing: orders.filter(order => order && order.status === 'preparing'),
-    ready: orders.filter(order => order && order.status === 'ready'),
-    delivered: orders.filter(order => order && order.status === 'delivered')
+    new: safeOrders.filter(order => order?.status === 'new'),
+    preparing: safeOrders.filter(order => order?.status === 'preparing'),
+    ready: safeOrders.filter(order => order?.status === 'ready'),
+    delivered: safeOrders.filter(order => order?.status === 'delivered'),
   };
 
   const getSectionTitle = (status: OrderStatus) => {
@@ -130,13 +131,13 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, onStatusUpdate, onOrderSe
       )}
 
       {/* Teslim Edildi (Son 10 sipariş) */}
-      {groupedOrders.delivered.length > 0 && (
+      {Array.isArray(groupedOrders.delivered) && groupedOrders.delivered.length > 0 && (
         <div>
           <h2 className="text-lg font-semibold text-gray-800 mb-4">
             {getSectionTitle('delivered')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {groupedOrders.delivered.slice(0, 10).map(order => (
+            {(groupedOrders.delivered || []).slice(0, 10).map(order => (
               <OrderCard
                 key={order.id}
                 order={order}
@@ -145,7 +146,7 @@ const OrderGrid: React.FC<OrderGridProps> = ({ orders, onStatusUpdate, onOrderSe
               />
             ))}
           </div>
-          {groupedOrders.delivered.length > 10 && (
+          {Array.isArray(groupedOrders.delivered) && groupedOrders.delivered.length > 10 && (
             <p className="text-sm text-gray-500 mt-4 text-center">
               Son 10 teslim edilmiş sipariş gösteriliyor. Toplam: {groupedOrders.delivered.length}
             </p>

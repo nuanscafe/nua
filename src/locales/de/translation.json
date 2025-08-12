@@ -1,4 +1,12 @@
 {
+  "waiter_call": {
+    "button": "Kellner rufen",
+    "sending": "Senden...",
+    "try_again_in_seconds": "Bitte versuche es in {{count}} Sekunden erneut.",
+    "message_default": "Kunde hat einen Kellner gerufen",
+    "sent_success": "Kellnerruf gesendet! Jemand wird gleich kommen.",
+    "sent_error": "Beim Senden des Kellnerrufs ist ein Fehler aufgetreten. Bitte versuche es erneut."
+  },
   "menuManagement": "Menüverwaltung",
   "addNewMenuItem": "Neuen Menüpunkt hinzufügen",
   "addNewMenuItemDescription": "Einen neuen Menüpunkt hinzufügen.",
